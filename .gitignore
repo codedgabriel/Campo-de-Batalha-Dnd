@@ -3,10 +3,6 @@
 # dependências
 node_modules/
 
-# build
-dist/
-client/dist/
-
 # variáveis de ambiente
 .env
 .env.local

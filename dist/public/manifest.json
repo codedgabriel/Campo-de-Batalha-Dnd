@@ -1,0 +1,20 @@
+{
+  "name": "DM Battlefield",
+  "short_name": "DMBattle",
+  "description": "Rastreador de iniciativa e batalha para D&D",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#b48a3c",
+  "orientation": "landscape-primary",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
