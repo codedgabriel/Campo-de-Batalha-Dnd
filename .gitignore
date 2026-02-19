@@ -1,1 +1,25 @@
 .vercel
+
+# dependências
+node_modules/
+
+# build
+dist/
+client/dist/
+
+# variáveis de ambiente
+.env
+.env.local
+.env.*
+
+# vercel
+.vercel/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# sistema
+.DS_Store
+Thumbs.db
