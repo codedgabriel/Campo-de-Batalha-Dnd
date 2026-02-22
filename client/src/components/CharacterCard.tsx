@@ -267,6 +267,14 @@ export function CharacterCard({ character, onRemove, onUpdate, onSelect, onAddCh
               <Copy className="w-4 h-4 mr-2" />
               Duplicar Combatente
             </DropdownMenuItem>
+            <DropdownMenuItem onClick={(e) => { 
+                e.stopPropagation();
+                const newName = window.prompt("Nome do Personagem:", character.name);
+                if (newName) onUpdate(character.id, { name: newName });
+              }}>
+              <Settings2 className="w-4 h-4 mr-2" />
+              Editar Nome
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={() => fileInputRef.current?.click()}>
               <ImageIcon className="w-4 h-4 mr-2" />
               Trocar Ficha (Imagem)
