@@ -29,7 +29,7 @@ export function PlayerInitiativeModal({ players, onUpdate, onClose }: PlayerInit
 
   const handleNext = () => {
     const val = parseInt(value) || 0;
-    onUpdate(currentPlayer.id, val);
+    onUpdate(currentPlayer.id, { initiative: val });
     
     if (currentIndex < players.length - 1) {
       setCurrentIndex(prev => prev + 1);

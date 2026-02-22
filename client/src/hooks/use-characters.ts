@@ -96,9 +96,19 @@ export function useCharacters() {
   };
 
   const updateCharacter = (id: string, updates: Partial<Character>) => {
-    setCharacters((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, ...updates } : c))
-    );
+    setCharacters((prev) => {
+      const updated = prev.map((c) => (c.id === id ? { ...c, ...updates } : c));
+      
+      // If initiative was updated, we should re-sort to maintain order
+      if (updates.initiative !== undefined) {
+        return [...updated].sort((a, b) => {
+          if (b.initiative !== a.initiative) return b.initiative - a.initiative;
+          return b.tieBreaker - a.tieBreaker;
+        });
+      }
+      
+      return updated;
+    });
   };
 
   const clearAll = () => {
