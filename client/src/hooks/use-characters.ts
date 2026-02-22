@@ -10,6 +10,8 @@ export interface Character {
   initiativeModifier: number;
   ac: number;
   attacks?: string;
+  category?: string;
+  quantity?: number;
   tieBreaker: number;
   isTurn: boolean;
   image?: string;
@@ -126,11 +128,9 @@ export function useCharacters() {
             isTurn: false,
           };
         }
-        // Players keep their manually entered initiative if they want, 
-        // but here we roll for everyone to satisfy "sum with d20" requirement
+        // Players keep their initiative fixed
         return { 
           ...char, 
-          initiative: totalInitiative,
           isTurn: false, 
           tieBreaker 
         };

@@ -11,6 +11,8 @@ export const characters = pgTable("characters", {
   initiativeModifier: integer("initiative_modifier").default(0),
   ac: integer("ac").default(10),
   attacks: text("attacks"), // Store as a simple string for now
+  category: text("category"), // Added category field
+  quantity: integer("quantity").default(1), // Added quantity field
   isTurn: boolean("is_turn").default(false),
   image: text("image"), // Base64 or URL of the character sheet image
   hp: integer("hp"),

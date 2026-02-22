@@ -36,15 +36,15 @@ export function InventoryManager({ onSelect, onAddCharacter }: InventoryManagerP
           variant="outline"
           className="w-full border-primary/50 hover:bg-primary/10 text-primary font-bold rounded-full h-12"
         >
-          <Package className="w-5 h-5 mr-2" />
-          Inventário de NPCs
+          <Plus className="w-5 h-5 mr-2" />
+          Adicionar
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-2xl bg-card border-border/50 backdrop-blur-xl max-h-[90vh] flex flex-col p-0">
         <DialogHeader className="p-6 pb-0">
           <DialogTitle className="text-2xl font-display text-primary flex items-center gap-2">
             <Package className="w-6 h-6" />
-            Inventário de NPCs
+            Inventário
           </DialogTitle>
         </DialogHeader>
 
@@ -53,7 +53,7 @@ export function InventoryManager({ onSelect, onAddCharacter }: InventoryManagerP
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input 
-                placeholder="Buscar NPC..." 
+                placeholder="Buscar no Inventário..." 
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="pl-9 bg-background/50"
@@ -97,12 +97,16 @@ export function InventoryManager({ onSelect, onAddCharacter }: InventoryManagerP
                     onClick={() => { onSelect(template); setIsOpen(false); }}
                   >
                     <div className="flex items-center gap-2 mb-2">
-                      {template.type === "enemy" ? <Skull className="w-4 h-4 text-destructive" /> : <Shield className="w-4 h-4 text-green-500" />}
+                      {template.type === "enemy" ? <Skull className="w-4 h-4 text-destructive" /> : (template.type === "ally" ? <Shield className="w-4 h-4 text-green-500" /> : <User className="w-4 h-4 text-blue-500" />)}
                       <span className="font-bold text-sm truncate">{template.name}</span>
                     </div>
                     <div className="text-[10px] text-muted-foreground flex justify-between">
-                      <span>HP {template.maxHp}</span>
-                      <span>CA {template.ac}</span>
+                      {template.type !== "player" && (
+                        <>
+                          <span>HP {template.maxHp}</span>
+                          <span>CA {template.ac}</span>
+                        </>
+                      )}
                     </div>
                     <button 
                       onClick={(e) => { e.stopPropagation(); removeTemplate(template.id); }}
@@ -114,7 +118,7 @@ export function InventoryManager({ onSelect, onAddCharacter }: InventoryManagerP
                 ))}
                 {filteredTemplates.length === 0 && (
                   <div className="col-span-full py-8 text-center text-muted-foreground text-sm">
-                    Nenhum NPC encontrado nesta categoria.
+                    Nada encontrado aqui.
                   </div>
                 )}
               </div>
@@ -126,12 +130,11 @@ export function InventoryManager({ onSelect, onAddCharacter }: InventoryManagerP
           <AddCharacterForm 
             onAdd={(name, type, init, count, img, hp, initMod, ac, atk) => {
               onAddCharacter(name, type, init, count, img, hp, initMod, ac, atk);
-              // Option to save to inventory could be added here
             }} 
             onSaveToInventory={(name, type, hp, ac, initMod, atk, img) => {
               addTemplate({
                 name,
-                type: type as "enemy" | "ally",
+                type: type as "enemy" | "ally" | "player",
                 hp: hp || 0,
                 maxHp: hp || 0,
                 ac: ac || 10,
