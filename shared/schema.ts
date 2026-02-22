@@ -24,19 +24,21 @@ export const characters = pgTable("characters", {
 export const categories = pgTable("categories", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
+  order: integer("order").default(0),
 });
 
 export const inventoryTemplates = pgTable("inventory_templates", {
   id: text("id").primaryKey(),
   categoryId: text("category_id").references(() => categories.id),
   name: text("name").notNull(),
-  type: text("type").notNull(), // 'enemy' | 'ally'
+  type: text("type").notNull(), // 'player' | 'enemy' | 'ally'
   ac: integer("ac").default(10),
   hp: integer("hp"),
   maxHp: integer("max_hp"),
   initiativeModifier: integer("initiative_modifier").default(0),
   attacks: text("attacks"),
   image: text("image"),
+  order: integer("order").default(0),
 });
 
 export const insertCharacterSchema = createInsertSchema(characters);

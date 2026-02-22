@@ -1,5 +1,5 @@
 import { Character } from "@/hooks/use-characters";
-import { GripVertical, Sword, Skull, Shield, User, Trash2, Image as ImageIcon, FileText, Heart, PlusCircle, MinusCircle, Settings2 } from "lucide-react";
+import { GripVertical, Sword, Skull, Shield, User, Trash2, Image as ImageIcon, FileText, Heart, PlusCircle, MinusCircle, Settings2, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -24,13 +24,28 @@ interface CharacterCardProps {
   onRemove: (id: string) => void;
   onUpdate: (id: string, updates: Partial<Character>) => void;
   onSelect: (id: string) => void;
+  onAddCharacter: (name: string, type: "player" | "enemy" | "ally", initiative: number, count: number, image?: string, hp?: number, initiativeModifier?: number, ac?: number, attacks?: string) => void;
 }
 
-export function CharacterCard({ character, onRemove, onUpdate, onSelect }: CharacterCardProps) {
+export function CharacterCard({ character, onRemove, onUpdate, onSelect, onAddCharacter }: CharacterCardProps) {
   const [isConfigOpen, setIsConfigOpen] = useState(false);
   const [hpShortcuts, setHpShortcuts] = useState([-1, -5, -10, 1, 5]);
   const [editingShortcuts, setEditingShortcuts] = useState(false);
   const [tempShortcuts, setTempShortcuts] = useState(hpShortcuts.join(", "));
+  
+  const handleDuplicate = () => {
+    onAddCharacter(
+      `${character.name} (Cópia)`,
+      character.type,
+      character.initiative,
+      1,
+      character.image,
+      character.hp,
+      character.initiativeModifier,
+      character.ac,
+      character.attacks
+    );
+  };
   const {
     attributes,
     listeners,
@@ -248,6 +263,10 @@ export function CharacterCard({ character, onRemove, onUpdate, onSelect }: Chara
           <DropdownMenuContent align="end" className="bg-card border-border shadow-xl">
             <DropdownMenuLabel>Opções</DropdownMenuLabel>
             <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleDuplicate(); }}>
+              <Copy className="w-4 h-4 mr-2" />
+              Duplicar Combatente
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={() => fileInputRef.current?.click()}>
               <ImageIcon className="w-4 h-4 mr-2" />
               Trocar Ficha (Imagem)

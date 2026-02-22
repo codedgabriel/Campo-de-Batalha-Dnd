@@ -22,8 +22,14 @@ export interface InventoryTemplate {
 const STORAGE_KEY_CATEGORIES = "dnd_inventory_categories_v1";
 const STORAGE_KEY_TEMPLATES = "dnd_inventory_templates_v1";
 
+const DEFAULT_CATEGORIES: Category[] = [
+  { id: "players", name: "Jogadores" },
+  { id: "allies", name: "Aliados" },
+  { id: "enemies", name: "Inimigos" },
+];
+
 export function useInventory() {
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<Category[]>(DEFAULT_CATEGORIES);
   const [templates, setTemplates] = useState<InventoryTemplate[]>([]);
 
   useEffect(() => {
@@ -32,7 +38,7 @@ export function useInventory() {
     if (savedCats) {
       try {
         const parsed = JSON.parse(savedCats);
-        if (Array.isArray(parsed)) setCategories(parsed);
+        if (Array.isArray(parsed) && parsed.length > 0) setCategories(parsed);
       } catch (e) { console.error(e); }
     }
     if (savedTemps) {

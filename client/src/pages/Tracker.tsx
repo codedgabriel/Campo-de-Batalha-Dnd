@@ -181,6 +181,7 @@ export default function Tracker() {
                               onRemove={removeCharacter}
                               onUpdate={handleUpdateCharacter}
                               onSelect={setSelectedCharacterId}
+                              onAddCharacter={addCharacter}
                             />
                           </motion.div>
                         ))}

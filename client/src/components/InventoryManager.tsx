@@ -7,9 +7,15 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useInventory } from "@/hooks/use-inventory";
 import type { InventoryTemplate } from "@/hooks/use-inventory";
-import { Plus, FolderPlus, Trash2, Search, Skull, Shield, Package, User } from "lucide-react";
+import { Plus, FolderPlus, Trash2, Search, Skull, Shield, Package, User, Copy, CopyPlus, ArrowRightLeft } from "lucide-react";
 import { AddCharacterForm } from "./AddCharacterForm";
 import { cn } from "@/lib/utils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface InventoryManagerProps {
   onSelect: (template: InventoryTemplate) => void;
@@ -20,7 +26,7 @@ export function InventoryManager({ onSelect, onAddCharacter }: InventoryManagerP
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [newCatName, setNewCatName] = useState("");
-  const { categories, templates, addCategory, removeCategory, addTemplate, removeTemplate } = useInventory();
+  const { categories, templates, addCategory, removeCategory, addTemplate, removeTemplate, updateTemplate } = useInventory();
   const [activeTab, setActiveTab] = useState("all");
 
   const filteredTemplates = templates.filter(t => 
@@ -31,6 +37,17 @@ export function InventoryManager({ onSelect, onAddCharacter }: InventoryManagerP
   const handleTemplateSelect = (template: InventoryTemplate) => {
     onSelect(template);
     setIsOpen(false);
+  };
+
+  const duplicateTemplate = (template: InventoryTemplate) => {
+    addTemplate({
+      ...template,
+      name: `${template.name} (Cópia)`,
+    });
+  };
+
+  const moveTemplate = (template: InventoryTemplate, newCategoryId: string) => {
+    updateTemplate(template.id, { categoryId: newCategoryId });
   };
 
   return (
@@ -83,12 +100,14 @@ export function InventoryManager({ onSelect, onAddCharacter }: InventoryManagerP
               {categories.map(cat => (
                 <div key={cat.id} className="relative group">
                   <TabsTrigger value={cat.id}>{cat.name}</TabsTrigger>
-                  <button 
-                    onClick={(e) => { e.stopPropagation(); removeCategory(cat.id); setActiveTab("all"); }}
-                    className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <Trash2 className="w-2 h-2" />
-                  </button>
+                  {!["players", "allies", "enemies"].includes(cat.id) && (
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); removeCategory(cat.id); setActiveTab("all"); }}
+                      className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <Trash2 className="w-2 h-2" />
+                    </button>
+                  )}
                 </div>
               ))}
             </TabsList>
@@ -113,12 +132,35 @@ export function InventoryManager({ onSelect, onAddCharacter }: InventoryManagerP
                         </>
                       )}
                     </div>
-                    <button 
-                      onClick={(e) => { e.stopPropagation(); removeTemplate(template.id); }}
-                      className="absolute top-1 right-1 p-1 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <Trash2 className="w-3 h-3" />
-                    </button>
+                    
+                    <div className="absolute top-1 right-1 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                          <Button variant="ghost" size="icon" className="h-6 w-6">
+                            <Plus className="h-3 w-3" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={(e) => { e.stopPropagation(); duplicateTemplate(template); }}>
+                            <CopyPlus className="w-4 h-4 mr-2" />
+                            Duplicar
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuLabel className="text-[10px] text-muted-foreground uppercase px-2 py-1">Mover para</DropdownMenuLabel>
+                          {categories.filter(c => c.id !== template.categoryId).map(cat => (
+                            <DropdownMenuItem key={cat.id} onClick={(e) => { e.stopPropagation(); moveTemplate(template, cat.id); }}>
+                              <ArrowRightLeft className="w-3 h-3 mr-2" />
+                              {cat.name}
+                            </DropdownMenuItem>
+                          ))}
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={(e) => { e.stopPropagation(); removeTemplate(template.id); }} className="text-destructive">
+                            <Trash2 className="w-4 h-4 mr-2" />
+                            Excluir
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
                   </div>
                 ))}
                 {filteredTemplates.length === 0 && (
@@ -138,6 +180,12 @@ export function InventoryManager({ onSelect, onAddCharacter }: InventoryManagerP
               setIsOpen(false);
             }} 
             onSaveToInventory={(name, type, hp, ac, initMod, atk, img) => {
+              // Auto-categorize based on type
+              let categoryId = "";
+              if (type === "player") categoryId = "players";
+              else if (type === "ally") categoryId = "allies";
+              else if (type === "enemy") categoryId = "enemies";
+
               addTemplate({
                 name,
                 type: type as "enemy" | "ally" | "player",
@@ -147,7 +195,7 @@ export function InventoryManager({ onSelect, onAddCharacter }: InventoryManagerP
                 initiativeModifier: initMod || 0,
                 attacks: atk || "",
                 image: img,
-                categoryId: activeTab === "all" ? "" : activeTab
+                categoryId: categoryId || (activeTab === "all" ? "" : activeTab)
               });
             }}
           />
