@@ -3,7 +3,8 @@ import { CharacterCard } from "@/components/CharacterCard";
 import { AddCharacterForm } from "@/components/AddCharacterForm";
 import { InventoryManager } from "@/components/InventoryManager";
 import { Button } from "@/components/ui/button";
-import { Dices, ChevronRight, RotateCcw, Swords, X } from "lucide-react";
+import { PlayerInitiativeModal } from "@/components/PlayerInitiativeModal";
+import { Dices, ChevronRight, RotateCcw, Swords, X, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   DndContext,
@@ -50,6 +51,9 @@ export default function Tracker() {
   const [selectedCharacterId, setSelectedCharacterId] = useState<string | null>(null);
   const [isRolling, setIsRolling] = useState(false);
   const [characterToConfirmDeath, setCharacterToConfirmDeath] = useState<Character | null>(null);
+  const [isPlayerInitiativeOpen, setIsPlayerInitiativeOpen] = useState(false);
+
+  const players = characters.filter(c => c.type === "player");
 
   const selectedCharacter = characters.find(c => c.id === selectedCharacterId) || characters.find(c => c.isTurn);
 
@@ -284,6 +288,17 @@ export default function Tracker() {
             />
           </div>
           <div className="flex gap-2 bg-card/80 backdrop-blur-xl p-1.5 rounded-full border border-border/50 shadow-2xl">
+            {players.length > 0 && (
+              <Button
+                size="icon"
+                variant="outline"
+                onClick={() => setIsPlayerInitiativeOpen(true)}
+                className="rounded-full w-12 h-12 shadow-lg hover:scale-105 transition-transform border-primary/30 text-primary"
+                title="Iniciativa dos Jogadores"
+              >
+                <Users className="w-6 h-6" />
+              </Button>
+            )}
             <Button
               size="icon"
               variant="secondary"
@@ -308,6 +323,15 @@ export default function Tracker() {
           </div>
         </div>
       </div>
+      <AnimatePresence>
+        {isPlayerInitiativeOpen && (
+          <PlayerInitiativeModal
+            players={players}
+            onUpdate={updateCharacter}
+            onClose={() => setIsPlayerInitiativeOpen(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
