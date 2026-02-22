@@ -19,6 +19,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import { EditInventoryForm } from "./EditInventoryForm";
+
 interface InventoryManagerProps {
   onSelect: (template: InventoryTemplate) => void;
   onAddCharacter: (name: string, type: "player" | "enemy" | "ally", initiative: number, count: number, image?: string, hp?: number, initiativeModifier?: number, ac?: number, attacks?: string) => void;
@@ -30,6 +32,7 @@ export function InventoryManager({ onSelect, onAddCharacter }: InventoryManagerP
   const [newCatName, setNewCatName] = useState("");
   const { categories, templates, addCategory, removeCategory, addTemplate, removeTemplate, updateTemplate } = useInventory();
   const [activeTab, setActiveTab] = useState("all");
+  const [editingTemplate, setEditingTemplate] = useState<InventoryTemplate | null>(null);
 
   const filteredTemplates = templates.filter(t => 
     t.name.toLowerCase().includes(search.toLowerCase()) && 
@@ -149,8 +152,7 @@ export function InventoryManager({ onSelect, onAddCharacter }: InventoryManagerP
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={(e) => { 
                               e.stopPropagation();
-                              const newName = window.prompt("Nome do Item:", template.name);
-                              if (newName) updateTemplate(template.id, { name: newName });
+                              setEditingTemplate(template);
                             }}>
                             <Settings2 className="w-4 h-4 mr-2" />
                             Editar
@@ -210,6 +212,18 @@ export function InventoryManager({ onSelect, onAddCharacter }: InventoryManagerP
             }}
           />
         </div>
+
+        {editingTemplate && (
+          <EditInventoryForm
+            template={editingTemplate}
+            open={!!editingTemplate}
+            onOpenChange={(open) => !open && setEditingTemplate(null)}
+            onSave={(id, updates) => {
+              updateTemplate(id, updates);
+              setEditingTemplate(null);
+            }}
+          />
+        )}
       </DialogContent>
     </Dialog>
   );
