@@ -8,7 +8,17 @@ import { Plus, User, Skull, Shield, X, History } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface AddCharacterFormProps {
-  onAdd: (name: string, type: "player" | "enemy" | "ally", initiative: number, count: number, image?: string, hp?: number) => void;
+  onAdd: (
+    name: string, 
+    type: "player" | "enemy" | "ally", 
+    initiative: number, 
+    count: number, 
+    image?: string, 
+    hp?: number,
+    initiativeModifier?: number,
+    ac?: number,
+    attacks?: string
+  ) => void;
 }
 
 const STORAGE_KEYS = {
@@ -24,6 +34,9 @@ export function AddCharacterForm({ onAdd }: AddCharacterFormProps) {
   const [name, setName] = useState("");
   const [type, setType] = useState<CharacterType>("enemy");
   const [initiative, setInitiative] = useState("0");
+  const [initModifier, setInitModifier] = useState("0");
+  const [ac, setAc] = useState("10");
+  const [attacks, setAttacks] = useState("");
   const [hp, setHp] = useState("");
   const [count, setCount] = useState("1");
   const [image, setImage] = useState<string | undefined>();
@@ -83,9 +96,22 @@ export function AddCharacterForm({ onAdd }: AddCharacterFormProps) {
     if (!name.trim()) return;
     
     saveName(name.trim(), type);
-    onAdd(name, type, parseInt(initiative) || 0, parseInt(count) || 1, image, hp ? parseInt(hp) : undefined);
+    onAdd(
+      name, 
+      type, 
+      parseInt(initiative) || 0, 
+      parseInt(count) || 1, 
+      image, 
+      hp ? parseInt(hp) : undefined,
+      parseInt(initModifier) || 0,
+      parseInt(ac) || 10,
+      attacks
+    );
     setName("");
     setInitiative("0");
+    setInitModifier("0");
+    setAc("10");
+    setAttacks("");
     setHp("");
     setCount("1");
     setImage(undefined);
@@ -215,10 +241,47 @@ export function AddCharacterForm({ onAdd }: AddCharacterFormProps) {
             </RadioGroup>
           </div>
 
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="init">Bônus de Iniciativa</Label>
+              <Input
+                id="init"
+                type="number"
+                value={initModifier}
+                onChange={(e) => setInitModifier(e.target.value)}
+                className="bg-background/50"
+                autoComplete="off"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="ac">CA (Armadura)</Label>
+              <Input
+                id="ac"
+                type="number"
+                value={ac}
+                onChange={(e) => setAc(e.target.value)}
+                className="bg-background/50"
+                autoComplete="off"
+              />
+            </div>
+          </div>
+
           <div className="space-y-2">
-            <Label htmlFor="init">Iniciativa Inicial (Opcional)</Label>
+            <Label htmlFor="attacks">Ataques / Ações</Label>
             <Input
-              id="init"
+              id="attacks"
+              placeholder="Ex: Espada Curta +5 (1d6+3)"
+              value={attacks}
+              onChange={(e) => setAttacks(e.target.value)}
+              className="bg-background/50"
+              autoComplete="off"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="init-manual">Iniciativa Atual (Opcional)</Label>
+            <Input
+              id="init-manual"
               type="number"
               value={initiative}
               onChange={(e) => setInitiative(e.target.value)}

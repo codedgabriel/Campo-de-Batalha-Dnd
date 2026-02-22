@@ -7,12 +7,15 @@ export interface Character {
   name: string;
   type: "player" | "enemy" | "ally";
   initiative: number;
+  initiativeModifier: number;
+  ac: number;
+  attacks?: string;
   tieBreaker: number;
   isTurn: boolean;
   image?: string;
   hp?: number;
   maxHp?: number;
-  dexterityModifier?: number; // Optional: could be used for auto-rolling tie breakers later
+  dexterityModifier?: number;
 }
 
 const STORAGE_KEY = "dnd_initiative_tracker_v1";
@@ -26,7 +29,15 @@ export function useCharacters() {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       try {
-        setCharacters(JSON.parse(stored));
+        const parsed = JSON.parse(stored);
+        // Migração simples para novos campos se não existirem
+        const migrated = parsed.map((c: any) => ({
+          ...c,
+          initiativeModifier: c.initiativeModifier ?? 0,
+          ac: c.ac ?? 10,
+          attacks: c.attacks ?? "",
+        }));
+        setCharacters(migrated);
       } catch (e) {
         console.error("Failed to parse characters from localStorage");
       }
@@ -38,7 +49,17 @@ export function useCharacters() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(characters));
   }, [characters]);
 
-  const addCharacter = (name: string, type: "player" | "enemy" | "ally", initiative = 0, count = 1, image?: string, hp?: number) => {
+  const addCharacter = (
+    name: string, 
+    type: "player" | "enemy" | "ally", 
+    initiative = 0, 
+    count = 1, 
+    image?: string, 
+    hp?: number,
+    initiativeModifier = 0,
+    ac = 10,
+    attacks = ""
+  ) => {
     const newCharacters: Character[] = [];
     
     for (let i = 0; i < count; i++) {
@@ -47,6 +68,9 @@ export function useCharacters() {
         name: count > 1 ? `${name} ${i + 1}` : name,
         type,
         initiative,
+        initiativeModifier,
+        ac,
+        attacks,
         tieBreaker: 0,
         isTurn: false,
         image,
@@ -90,18 +114,26 @@ export function useCharacters() {
   const rollInitiative = () => {
     setCharacters((prev) => {
       const rolled = prev.map((char) => {
+        const d20 = Math.floor(Math.random() * 20) + 1;
+        const totalInitiative = d20 + (char.initiativeModifier || 0);
+        const tieBreaker = Math.floor(Math.random() * 20) + 1;
+
         if (char.type === "enemy" || char.type === "ally") {
-          const d20 = Math.floor(Math.random() * 20) + 1;
-          const tieBreaker = Math.floor(Math.random() * 20) + 1;
           return {
             ...char,
-            initiative: d20,
+            initiative: totalInitiative,
             tieBreaker,
             isTurn: false,
           };
         }
-        // Players keep their manually entered initiative
-        return { ...char, isTurn: false, tieBreaker: Math.floor(Math.random() * 20) + 1 };
+        // Players keep their manually entered initiative if they want, 
+        // but here we roll for everyone to satisfy "sum with d20" requirement
+        return { 
+          ...char, 
+          initiative: totalInitiative,
+          isTurn: false, 
+          tieBreaker 
+        };
       });
 
       // Sort: Highest Initiative first. If tie, compare tieBreaker.

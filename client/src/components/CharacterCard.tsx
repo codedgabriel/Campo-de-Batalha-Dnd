@@ -145,20 +145,31 @@ export function CharacterCard({ character, onRemove, onUpdate, onSelect }: Chara
             </Badge>
           )}
         </div>
-        <div className="flex items-center gap-2 text-[9px] md:text-xs text-muted-foreground mt-0.5">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[9px] md:text-xs text-muted-foreground mt-0.5">
           <span className={cn(
             "uppercase font-bold tracking-wider",
             character.type === "enemy" ? "text-destructive" : character.type === "ally" ? "text-green-400" : "text-blue-400"
           )}>
             {character.type === "enemy" ? "Inimigo" : character.type === "ally" ? "Aliado" : "PJ"}
           </span>
+          <div className="flex items-center gap-1">
+            <Shield className="w-3 h-3 text-blue-400" />
+            <span className="font-bold text-foreground">CA {character.ac}</span>
+          </div>
           {character.hp !== undefined && (
-            <div className="flex items-center gap-2 ml-2">
+            <div className="flex items-center gap-1">
               <Heart className="w-3 h-3 text-red-500 fill-red-500" />
               <span className="font-bold text-foreground">{character.hp} / {character.maxHp}</span>
             </div>
           )}
         </div>
+        
+        {character.attacks && (
+          <div className="mt-1 flex items-center gap-1 text-[9px] md:text-[10px] text-muted-foreground bg-muted/20 px-1.5 py-0.5 rounded border border-border/30 w-fit">
+            <Sword className="w-2.5 h-2.5" />
+            <span className="truncate max-w-[150px]">{character.attacks}</span>
+          </div>
+        )}
         
         {character.hp !== undefined && (
           <div className="mt-2 flex items-center gap-1 overflow-x-auto no-scrollbar">
@@ -183,17 +194,32 @@ export function CharacterCard({ character, onRemove, onUpdate, onSelect }: Chara
       </div>
 
       {/* Initiative Score */}
-      <div className="flex flex-col items-center">
-        <span className="text-[8px] md:text-[10px] uppercase font-bold text-muted-foreground mb-0.5 md:mb-1 tracking-widest">
-          Init
-        </span>
-        <div className="relative group/init">
+      <div className="flex flex-col items-center gap-1">
+        <div className="flex flex-col items-center">
+          <span className="text-[8px] md:text-[9px] uppercase font-bold text-muted-foreground tracking-widest">
+            Bônus
+          </span>
           <Input
             type="number"
-            value={character.initiative}
-            onChange={handleInitiativeChange}
-            className="w-12 md:w-16 h-8 md:h-12 text-center text-base md:text-xl font-bold bg-background/50 border-border focus:border-primary focus:ring-primary/20 p-0"
+            value={character.initiativeModifier}
+            onChange={(e) => onUpdate(character.id, { initiativeModifier: parseInt(e.target.value) || 0 })}
+            className="w-10 md:w-12 h-6 md:h-7 text-center text-xs font-bold bg-background/30 border-border p-0"
+            onClick={(e) => e.stopPropagation()}
           />
+        </div>
+        <div className="flex flex-col items-center">
+          <span className="text-[8px] md:text-[10px] uppercase font-bold text-muted-foreground tracking-widest">
+            Total
+          </span>
+          <div className="relative group/init">
+            <Input
+              type="number"
+              value={character.initiative}
+              onChange={handleInitiativeChange}
+              className="w-12 md:w-16 h-8 md:h-10 text-center text-base md:text-lg font-bold bg-background/50 border-border focus:border-primary focus:ring-primary/20 p-0"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
         </div>
       </div>
 
@@ -225,6 +251,20 @@ export function CharacterCard({ character, onRemove, onUpdate, onSelect }: Chara
             <DropdownMenuItem onClick={() => fileInputRef.current?.click()}>
               <ImageIcon className="w-4 h-4 mr-2" />
               Trocar Ficha (Imagem)
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => {
+                const newAttacks = window.prompt("Ataques/Ações:", character.attacks || "");
+                if (newAttacks !== null) onUpdate(character.id, { attacks: newAttacks });
+              }}>
+              <Sword className="w-4 h-4 mr-2" />
+              Editar Ataques
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => {
+                const newAc = window.prompt("Classe de Armadura (CA):", character.ac.toString());
+                if (newAc !== null) onUpdate(character.id, { ac: parseInt(newAc) || 10 });
+              }}>
+              <Shield className="w-4 h-4 mr-2" />
+              Editar CA
             </DropdownMenuItem>
             {(character.type === 'enemy' || character.type === 'ally') && (
               <DropdownMenuItem onClick={() => {
