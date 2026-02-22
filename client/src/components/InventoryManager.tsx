@@ -106,7 +106,7 @@ export function InventoryManager({ onSelect, onAddCharacter }: InventoryManagerP
                       <span className="font-bold text-sm truncate">{template.name}</span>
                     </div>
                     <div className="text-[10px] text-muted-foreground flex justify-between">
-                      {template.type !== "player" && (
+                      {template.type !== "player" && template.hp !== undefined && (
                         <>
                           <span>HP {template.maxHp}</span>
                           <span>CA {template.ac}</span>
