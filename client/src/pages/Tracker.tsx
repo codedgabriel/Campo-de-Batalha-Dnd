@@ -216,7 +216,25 @@ export default function Tracker() {
       <div className="fixed bottom-4 md:bottom-6 left-0 right-0 flex justify-center px-4 pointer-events-none z-50">
         <div className="pointer-events-auto max-w-xl w-full flex gap-2 items-center justify-center">
           <div className="flex-1 max-w-[200px] shadow-2xl">
+            <div className="flex flex-col gap-4">
+            <InventoryManager 
+              onAddCharacter={addCharacter}
+              onSelect={(template) => {
+                addCharacter(
+                  template.name,
+                  template.type,
+                  0,
+                  1,
+                  template.image,
+                  template.hp,
+                  template.initiativeModifier,
+                  template.ac,
+                  template.attacks
+                );
+              }}
+            />
             <AddCharacterForm onAdd={addCharacter} />
+          </div>
           </div>
           <div className="flex gap-2 bg-card/80 backdrop-blur-xl p-1.5 rounded-full border border-border/50 shadow-2xl">
             <Button

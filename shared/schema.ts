@@ -19,7 +19,29 @@ export const characters = pgTable("characters", {
   tieBreaker: integer("tie_breaker").default(0),
 });
 
+export const categories = pgTable("categories", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+});
+
+export const inventoryTemplates = pgTable("inventory_templates", {
+  id: text("id").primaryKey(),
+  categoryId: text("category_id").references(() => categories.id),
+  name: text("name").notNull(),
+  type: text("type").notNull(), // 'enemy' | 'ally'
+  ac: integer("ac").default(10),
+  hp: integer("hp"),
+  maxHp: integer("max_hp"),
+  initiativeModifier: integer("initiative_modifier").default(0),
+  attacks: text("attacks"),
+  image: text("image"),
+});
+
 export const insertCharacterSchema = createInsertSchema(characters);
+export const insertCategorySchema = createInsertSchema(categories);
+export const insertInventoryTemplateSchema = createInsertSchema(inventoryTemplates);
 
 export type Character = typeof characters.$inferSelect;
+export type Category = typeof categories.$inferSelect;
+export type InventoryTemplate = typeof inventoryTemplates.$inferSelect;
 export type InsertCharacter = z.infer<typeof insertCharacterSchema>;

@@ -19,6 +19,15 @@ interface AddCharacterFormProps {
     ac?: number,
     attacks?: string
   ) => void;
+  onSaveToInventory?: (
+    name: string,
+    type: string,
+    hp?: number,
+    ac?: number,
+    initiativeModifier?: number,
+    attacks?: string,
+    image?: string
+  ) => void;
 }
 
 const STORAGE_KEYS = {
@@ -29,8 +38,9 @@ const STORAGE_KEYS = {
 
 type CharacterType = "player" | "enemy" | "ally";
 
-export function AddCharacterForm({ onAdd }: AddCharacterFormProps) {
+export function AddCharacterForm({ onAdd, onSaveToInventory }: AddCharacterFormProps) {
   const [open, setOpen] = useState(false);
+  const [saveToInv, setSaveToInv] = useState(false);
   const [name, setName] = useState("");
   const [type, setType] = useState<CharacterType>("enemy");
   const [initiative, setInitiative] = useState("0");
@@ -96,6 +106,19 @@ export function AddCharacterForm({ onAdd }: AddCharacterFormProps) {
     if (!name.trim()) return;
     
     saveName(name.trim(), type);
+    
+    if (saveToInv && onSaveToInventory) {
+      onSaveToInventory(
+        name,
+        type,
+        hp ? parseInt(hp) : undefined,
+        parseInt(ac) || 10,
+        parseInt(initModifier) || 0,
+        attacks,
+        image
+      );
+    }
+
     onAdd(
       name, 
       type, 
@@ -115,6 +138,7 @@ export function AddCharacterForm({ onAdd }: AddCharacterFormProps) {
     setHp("");
     setCount("1");
     setImage(undefined);
+    setSaveToInv(false);
     setOpen(false);
     setShowRecent(false);
   };
@@ -342,6 +366,17 @@ export function AddCharacterForm({ onAdd }: AddCharacterFormProps) {
                 </button>
               </div>
             )}
+          </div>
+
+          <div className="flex items-center space-x-2 py-2">
+            <input 
+              type="checkbox" 
+              id="saveInv" 
+              checked={saveToInv} 
+              onChange={(e) => setSaveToInv(e.target.checked)}
+              className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary"
+            />
+            <Label htmlFor="saveInv" className="text-sm cursor-pointer">Salvar esta ficha no Inventário</Label>
           </div>
 
           <Button type="submit" className="w-full font-bold">
