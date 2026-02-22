@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 interface PlayerInitiativeModalProps {
   players: Character[];
-  onUpdate: (id: string, initiative: number) => void;
+  onUpdate: (id: string, updates: Partial<Character>) => void;
   onClose: () => void;
 }
 
