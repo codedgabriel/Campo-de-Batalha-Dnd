@@ -1,4 +1,4 @@
-import { useCharacters } from "@/hooks/use-characters";
+import { useCharacters, type Character } from "@/hooks/use-characters";
 import { CharacterCard } from "@/components/CharacterCard";
 import { AddCharacterForm } from "@/components/AddCharacterForm";
 import { InventoryManager } from "@/components/InventoryManager";
@@ -22,6 +22,16 @@ import {
 } from "@dnd-kit/sortable";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export default function Tracker() {
   const {
@@ -39,8 +49,17 @@ export default function Tracker() {
 
   const [selectedCharacterId, setSelectedCharacterId] = useState<string | null>(null);
   const [isRolling, setIsRolling] = useState(false);
+  const [characterToConfirmDeath, setCharacterToConfirmDeath] = useState<Character | null>(null);
 
   const selectedCharacter = characters.find(c => c.id === selectedCharacterId) || characters.find(c => c.isTurn);
+
+  const handleUpdateCharacter = (id: string, updates: Partial<Character>) => {
+    const char = characters.find(c => c.id === id);
+    if (char && updates.hp !== undefined && updates.hp <= 0 && (char.hp || 0) > 0) {
+      setCharacterToConfirmDeath({ ...char, ...updates });
+    }
+    updateCharacter(id, updates);
+  };
 
   const handleRollInitiative = async () => {
     setIsRolling(true);
@@ -160,7 +179,7 @@ export default function Tracker() {
                             <CharacterCard
                               character={char}
                               onRemove={removeCharacter}
-                              onUpdate={updateCharacter}
+                              onUpdate={handleUpdateCharacter}
                               onSelect={setSelectedCharacterId}
                             />
                           </motion.div>
@@ -212,6 +231,35 @@ export default function Tracker() {
           </div>
         </div>
       </main>
+
+      {/* Death Confirmation Modal */}
+      <AlertDialog 
+        open={!!characterToConfirmDeath} 
+        onOpenChange={(open) => !open && setCharacterToConfirmDeath(null)}
+      >
+        <AlertDialogContent className="bg-card border-border shadow-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-2xl font-display text-primary">Ele morreu?</AlertDialogTitle>
+            <AlertDialogDescription className="text-muted-foreground">
+              {characterToConfirmDeath?.name} chegou a 0 pontos de vida. Deseja removê-lo do campo de batalha?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="bg-muted hover:bg-muted/80">Não, manter</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                if (characterToConfirmDeath) {
+                  removeCharacter(characterToConfirmDeath.id);
+                  setCharacterToConfirmDeath(null);
+                }
+              }}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Sim, remover
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Floating Action Button (Mobile) or Bottom Bar */}
       <div className="fixed bottom-4 md:bottom-6 left-0 right-0 flex justify-center px-4 pointer-events-none z-50">
