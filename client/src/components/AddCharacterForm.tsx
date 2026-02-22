@@ -347,25 +347,27 @@ export function AddCharacterForm({ onAdd, onSaveToInventory }: AddCharacterFormP
 
           <div className="space-y-2">
             <Label htmlFor="image">Ficha (Imagem)</Label>
-            <Input
-              id="image"
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-              className="bg-background/50 cursor-pointer"
-            />
-            {image && (
-              <div className="mt-2 relative w-20 h-20 border rounded overflow-hidden">
-                <img src={image} alt="Preview" className="w-full h-full object-cover" />
-                <button
-                  type="button"
-                  onClick={() => setImage(undefined)}
-                  className="absolute top-0 right-0 bg-destructive text-destructive-foreground p-0.5 rounded-bl"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              </div>
-            )}
+            <div className="flex gap-2">
+              <Input
+                id="image"
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="bg-background/50 cursor-pointer flex-1"
+              />
+              {image && (
+                <div className="relative w-10 h-10 border rounded overflow-hidden flex-shrink-0">
+                  <img src={image} alt="Preview" className="w-full h-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => setImage(undefined)}
+                    className="absolute top-0 right-0 bg-destructive text-destructive-foreground p-0.5 rounded-bl"
+                  >
+                    <X className="w-2 h-2" />
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="flex items-center space-x-2 py-2">

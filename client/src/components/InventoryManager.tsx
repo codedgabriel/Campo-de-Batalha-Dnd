@@ -5,8 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useInventory, InventoryTemplate } from "@/hooks/use-inventory";
-import { Plus, FolderPlus, Trash2, Search, Skull, Shield, Package, UserPlus } from "lucide-react";
+import { useInventory } from "@/hooks/use-inventory";
+import type { InventoryTemplate } from "@/hooks/use-inventory";
+import { Plus, FolderPlus, Trash2, Search, Skull, Shield, Package } from "lucide-react";
 import { AddCharacterForm } from "./AddCharacterForm";
 import { cn } from "@/lib/utils";
 
@@ -19,7 +20,7 @@ export function InventoryManager({ onSelect, onAddCharacter }: InventoryManagerP
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [newCatName, setNewCatName] = useState("");
-  const { categories, templates, addCategory, removeCategory, removeTemplate } = useInventory();
+  const { categories, templates, addCategory, removeCategory, addTemplate, removeTemplate } = useInventory();
   const [activeTab, setActiveTab] = useState("all");
 
   const filteredTemplates = templates.filter(t => 

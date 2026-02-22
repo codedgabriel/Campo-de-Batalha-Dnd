@@ -1,6 +1,7 @@
 import { useCharacters } from "@/hooks/use-characters";
 import { CharacterCard } from "@/components/CharacterCard";
 import { AddCharacterForm } from "@/components/AddCharacterForm";
+import { InventoryManager } from "@/components/InventoryManager";
 import { Button } from "@/components/ui/button";
 import { Dices, ChevronRight, RotateCcw, Swords, X } from "lucide-react";
 import { cn } from "@/lib/utils";
