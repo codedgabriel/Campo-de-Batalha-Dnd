@@ -7,7 +7,7 @@ import {
   type InsertCharacter,
   type Category,
   type InventoryTemplate,
-} from "@shared/schema";
+} from "../shared/schema";
 import { eq, asc } from "drizzle-orm";
 import { nanoid } from "nanoid";
 
