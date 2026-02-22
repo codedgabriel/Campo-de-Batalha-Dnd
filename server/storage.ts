@@ -88,6 +88,60 @@ export class DatabaseStorage implements IStorage {
         { id: "enemies", name: "Inimigos", order: 3 },
       ]);
     }
+
+    const existingTemplates = await this.getTemplates();
+    if (existingTemplates.length === 0) {
+      await db.insert(inventoryTemplates).values([
+        {
+          id: nanoid(),
+          categoryId: "enemies",
+          name: "Bandido",
+          type: "enemy",
+          ac: 12,
+          hp: 11,
+          maxHp: 11,
+          attacks: "Cimitarra +3, Besta Leve +3",
+          image: "@assets/Bandido_1771782610726.jpeg",
+          order: 1
+        },
+        {
+          id: nanoid(),
+          categoryId: "enemies",
+          name: "Esqueleto",
+          type: "enemy",
+          ac: 13,
+          hp: 13,
+          maxHp: 13,
+          attacks: "Espada Curta +4, Arco Curto +4",
+          image: "@assets/Esqueleto_1771782610731.jpeg",
+          order: 2
+        },
+        {
+          id: nanoid(),
+          categoryId: "enemies",
+          name: "Guarda",
+          type: "enemy",
+          ac: 16,
+          hp: 11,
+          maxHp: 11,
+          attacks: "Lança +3",
+          image: "@assets/Guarda_1771782610733.jpeg",
+          order: 3
+        },
+        {
+          id: nanoid(),
+          categoryId: "enemies",
+          name: "Zumbi",
+          type: "enemy",
+          ac: 8,
+          hp: 22,
+          maxHp: 22,
+          attacks: "Pancada +3",
+          image: "@assets/Zumbi_1771782610733.jpeg",
+          order: 4
+        }
+      ]);
+    }
   }
 }
 
