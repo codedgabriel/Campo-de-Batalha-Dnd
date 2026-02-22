@@ -8,6 +8,9 @@ export const characters = pgTable("characters", {
   name: text("name").notNull(),
   type: text("type").notNull(), // 'player' | 'enemy' | 'ally'
   initiative: integer("initiative").default(0),
+  initiativeModifier: integer("initiative_modifier").default(0),
+  ac: integer("ac").default(10),
+  attacks: text("attacks"), // Store as a simple string for now
   isTurn: boolean("is_turn").default(false),
   image: text("image"), // Base64 or URL of the character sheet image
   hp: integer("hp"),
