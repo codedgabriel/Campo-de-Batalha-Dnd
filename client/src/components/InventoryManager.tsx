@@ -7,7 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useInventory } from "@/hooks/use-inventory";
 import type { InventoryTemplate } from "@/hooks/use-inventory";
-import { Plus, FolderPlus, Trash2, Search, Skull, Shield, Package, User, Copy, CopyPlus, ArrowRightLeft } from "lucide-react";
+import { Plus, FolderPlus, Trash2, Search, Skull, Shield, Package, User, Copy, CopyPlus, ArrowRightLeft, Settings2 } from "lucide-react";
 import { AddCharacterForm } from "./AddCharacterForm";
 import { cn } from "@/lib/utils";
 import {
@@ -146,6 +146,14 @@ export function InventoryManager({ onSelect, onAddCharacter }: InventoryManagerP
                           <DropdownMenuItem onClick={(e) => { e.stopPropagation(); duplicateTemplate(template); }}>
                             <CopyPlus className="w-4 h-4 mr-2" />
                             Duplicar
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={(e) => { 
+                              e.stopPropagation();
+                              const newName = window.prompt("Nome do Item:", template.name);
+                              if (newName) updateTemplate(template.id, { name: newName });
+                            }}>
+                            <Settings2 className="w-4 h-4 mr-2" />
+                            Editar
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuLabel className="text-[10px] text-muted-foreground uppercase px-2 py-1">Mover para</DropdownMenuLabel>
