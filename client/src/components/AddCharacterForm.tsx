@@ -71,7 +71,7 @@ export function AddCharacterForm({ onAdd, onSaveToInventory }: AddCharacterFormP
       hp ? parseInt(hp) : undefined,
       parseInt(initModifier) || 0,
       parseInt(ac) || 10,
-      attacks
+      attacks || ""
     );
 
     if (onSaveToInventory) {

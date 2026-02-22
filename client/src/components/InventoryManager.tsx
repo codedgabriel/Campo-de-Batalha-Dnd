@@ -28,6 +28,11 @@ export function InventoryManager({ onSelect, onAddCharacter }: InventoryManagerP
     (activeTab === "all" || t.categoryId === activeTab)
   );
 
+  const handleTemplateSelect = (template: InventoryTemplate) => {
+    onSelect(template);
+    setIsOpen(false);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -94,10 +99,10 @@ export function InventoryManager({ onSelect, onAddCharacter }: InventoryManagerP
                   <div 
                     key={template.id}
                     className="group relative bg-card/50 border border-border/50 p-3 rounded-lg hover:border-primary/50 hover:bg-primary/5 transition-all cursor-pointer"
-                    onClick={() => { onSelect(template); setIsOpen(false); }}
+                    onClick={() => handleTemplateSelect(template)}
                   >
                     <div className="flex items-center gap-2 mb-2">
-                      {template.type === "enemy" ? <Skull className="w-4 h-4 text-destructive" /> : (template.type === "ally" ? <Shield className="w-4 h-4 text-green-500" /> : <User className="w-4 h-4 text-blue-500" />)}
+                      {template.type === "enemy" ? <Skull className="w-4 h-4 text-destructive" /> : (template.type === "ally" ? <Shield className="w-4 h-4 text-green-500" /> : <Package className="w-4 h-4 text-blue-500" />)}
                       <span className="font-bold text-sm truncate">{template.name}</span>
                     </div>
                     <div className="text-[10px] text-muted-foreground flex justify-between">
@@ -130,6 +135,7 @@ export function InventoryManager({ onSelect, onAddCharacter }: InventoryManagerP
           <AddCharacterForm 
             onAdd={(name, type, init, count, img, hp, initMod, ac, atk) => {
               onAddCharacter(name, type, init, count, img, hp, initMod, ac, atk);
+              setIsOpen(false);
             }} 
             onSaveToInventory={(name, type, hp, ac, initMod, atk, img) => {
               addTemplate({
