@@ -7,7 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useInventory } from "@/hooks/use-inventory";
 import type { InventoryTemplate } from "@/hooks/use-inventory";
-import { Plus, FolderPlus, Trash2, Search, Skull, Shield, Package } from "lucide-react";
+import { Plus, FolderPlus, Trash2, Search, Skull, Shield, Package, User } from "lucide-react";
 import { AddCharacterForm } from "./AddCharacterForm";
 import { cn } from "@/lib/utils";
 
@@ -102,7 +102,7 @@ export function InventoryManager({ onSelect, onAddCharacter }: InventoryManagerP
                     onClick={() => handleTemplateSelect(template)}
                   >
                     <div className="flex items-center gap-2 mb-2">
-                      {template.type === "enemy" ? <Skull className="w-4 h-4 text-destructive" /> : (template.type === "ally" ? <Shield className="w-4 h-4 text-green-500" /> : <Package className="w-4 h-4 text-blue-500" />)}
+                      {template.type === "enemy" ? <Skull className="w-4 h-4 text-destructive" /> : (template.type === "ally" ? <Shield className="w-4 h-4 text-green-500" /> : <User className="w-4 h-4 text-blue-500" />)}
                       <span className="font-bold text-sm truncate">{template.name}</span>
                     </div>
                     <div className="text-[10px] text-muted-foreground flex justify-between">

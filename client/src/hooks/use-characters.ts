@@ -32,19 +32,21 @@ export function useCharacters() {
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
-        // Migração simples para novos campos se não existirem
-        const migrated = parsed.map((c: any) => ({
-          ...c,
-          initiative: Number(c.initiative) || 0,
-          initiativeModifier: Number(c.initiativeModifier) || 0,
-          ac: Number(c.ac) || 10,
-          attacks: c.attacks ?? "",
-          tieBreaker: Number(c.tieBreaker) || 0,
-          hp: c.hp !== undefined ? Number(c.hp) : undefined,
-          maxHp: c.maxHp !== undefined ? Number(c.maxHp) : undefined,
-          isTurn: !!c.isTurn,
-        }));
-        setCharacters(migrated);
+        if (Array.isArray(parsed)) {
+          // Migração simples para novos campos se não existirem
+          const migrated = parsed.map((c: any) => ({
+            ...c,
+            initiative: Number(c.initiative) || 0,
+            initiativeModifier: Number(c.initiativeModifier) || 0,
+            ac: Number(c.ac) || 10,
+            attacks: c.attacks ?? "",
+            tieBreaker: Number(c.tieBreaker) || 0,
+            hp: c.hp !== undefined ? Number(c.hp) : undefined,
+            maxHp: c.maxHp !== undefined ? Number(c.maxHp) : undefined,
+            isTurn: !!c.isTurn,
+          }));
+          setCharacters(migrated);
+        }
       } catch (e) {
         console.error("Failed to parse characters from localStorage");
       }

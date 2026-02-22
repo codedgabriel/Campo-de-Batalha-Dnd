@@ -10,7 +10,7 @@ export interface InventoryTemplate {
   id: string;
   categoryId: string;
   name: string;
-  type: "enemy" | "ally";
+  type: "player" | "enemy" | "ally";
   ac: number;
   hp: number;
   maxHp: number;
@@ -29,8 +29,18 @@ export function useInventory() {
   useEffect(() => {
     const savedCats = localStorage.getItem(STORAGE_KEY_CATEGORIES);
     const savedTemps = localStorage.getItem(STORAGE_KEY_TEMPLATES);
-    if (savedCats) setCategories(JSON.parse(savedCats));
-    if (savedTemps) setTemplates(JSON.parse(savedTemps));
+    if (savedCats) {
+      try {
+        const parsed = JSON.parse(savedCats);
+        if (Array.isArray(parsed)) setCategories(parsed);
+      } catch (e) { console.error(e); }
+    }
+    if (savedTemps) {
+      try {
+        const parsed = JSON.parse(savedTemps);
+        if (Array.isArray(parsed)) setTemplates(parsed);
+      } catch (e) { console.error(e); }
+    }
   }, []);
 
   useEffect(() => {
