@@ -206,31 +206,21 @@ export function AddCharacterForm({ onAdd, onSaveToInventory }: AddCharacterFormP
               </select>
             </div>
 
-            {type === "player" ? (
-              <div className="space-y-2">
-                <Label htmlFor="init">Iniciativa Fixa (Manual)</Label>
-                <Input
-                  id="init"
-                  type="number"
-                  value={initiative}
-                  onChange={(e) => setInitiative(e.target.value)}
-                  className="bg-background/50"
-                  autoComplete="off"
-                />
-              </div>
-            ) : (
+            <div className="space-y-2">
+              <Label htmlFor="init">Iniciativa Fixa (Manual)</Label>
+              <Input
+                id="init"
+                type="number"
+                value={initiative}
+                onChange={(e) => setInitiative(e.target.value)}
+                className="bg-background/50"
+                autoComplete="off"
+              />
+            </div>
+
+            {type !== "player" && (
               <>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="init-bonus">Bônus de Iniciativa</Label>
-                    <Input
-                      id="init-bonus"
-                      type="number"
-                      value={initModifier}
-                      onChange={(e) => setInitModifier(e.target.value)}
-                      className="bg-background/50"
-                    />
-                  </div>
                   <div className="space-y-2">
                     <Label htmlFor="ac">CA</Label>
                     <Input

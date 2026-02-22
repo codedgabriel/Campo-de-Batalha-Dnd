@@ -210,18 +210,20 @@ export function CharacterCard({ character, onRemove, onUpdate, onSelect, onAddCh
 
       {/* Initiative Score */}
       <div className="flex flex-col items-center gap-1">
-        <div className="flex flex-col items-center">
-          <span className="text-[8px] md:text-[9px] uppercase font-bold text-muted-foreground tracking-widest">
-            Bônus
-          </span>
-          <Input
-            type="number"
-            value={character.initiativeModifier}
-            onChange={(e) => onUpdate(character.id, { initiativeModifier: parseInt(e.target.value) || 0 })}
-            className="w-10 md:w-12 h-6 md:h-7 text-center text-xs font-bold bg-background/30 border-border p-0"
-            onClick={(e) => e.stopPropagation()}
-          />
-        </div>
+        {character.type !== "player" && (
+          <div className="flex flex-col items-center">
+            <span className="text-[8px] md:text-[9px] uppercase font-bold text-muted-foreground tracking-widest">
+              Bônus
+            </span>
+            <Input
+              type="number"
+              value={character.initiativeModifier}
+              onChange={(e) => onUpdate(character.id, { initiativeModifier: parseInt(e.target.value) || 0 })}
+              className="w-10 md:w-12 h-6 md:h-7 text-center text-xs font-bold bg-background/30 border-border p-0"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        )}
         <div className="flex flex-col items-center">
           <span className="text-[8px] md:text-[10px] uppercase font-bold text-muted-foreground tracking-widest">
             Total

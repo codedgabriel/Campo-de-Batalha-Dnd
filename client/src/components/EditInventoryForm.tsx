@@ -173,16 +173,18 @@ export function EditInventoryForm({ template, open, onOpenChange, onSave }: Edit
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="edit-init-bonus">Bônus de Iniciativa</Label>
-                <Input
-                  id="edit-init-bonus"
-                  type="number"
-                  value={initModifier}
-                  onChange={(e) => setInitModifier(e.target.value)}
-                  className="bg-background/50"
-                />
-              </div>
+              {type !== "player" && (
+                <div className="space-y-2">
+                  <Label htmlFor="edit-init-bonus">Bônus de Iniciativa</Label>
+                  <Input
+                    id="edit-init-bonus"
+                    type="number"
+                    value={initModifier}
+                    onChange={(e) => setInitModifier(e.target.value)}
+                    className="bg-background/50"
+                  />
+                </div>
+              )}
               <div className="space-y-2">
                 <Label htmlFor="edit-ac">CA</Label>
                 <Input
