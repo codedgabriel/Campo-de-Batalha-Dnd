@@ -140,8 +140,8 @@ export function InventoryManager({ onSelect, onAddCharacter }: InventoryManagerP
               ))}
             </TabsList>
 
-            <ScrollArea className="flex-1 border border-border/30 rounded-2xl bg-muted/10 p-4 shadow-inner">
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+            <ScrollArea className="flex-1 border border-border/30 rounded-2xl bg-muted/10 p-4 shadow-inner overflow-y-auto">
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 pb-10">
                 {filteredTemplates.map(template => (
                   <div 
                     key={template.id}
