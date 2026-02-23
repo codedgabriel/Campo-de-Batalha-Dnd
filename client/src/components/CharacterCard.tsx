@@ -366,11 +366,18 @@ export function CharacterCard({ character, onRemove, onUpdate, onSelect, onAddCh
                 e.preventDefault();
                 e.stopPropagation();
               }}
+              onPointerDown={(e) => {
+                e.stopPropagation();
+              }}
             >
               <Settings2 className="w-4 h-4 md:w-5 md:h-5" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="bg-card border-border shadow-xl">
+          <DropdownMenuContent 
+            align="end" 
+            className="bg-card border-border shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
             <DropdownMenuLabel>Opções</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleDuplicate(); }}>

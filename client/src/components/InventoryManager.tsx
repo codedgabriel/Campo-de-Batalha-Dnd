@@ -183,14 +183,31 @@ export function InventoryManager({ onSelect, onAddCharacter }: InventoryManagerP
                       )}
                     </div>
                     
-                    <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-all translate-y-[-10px] group-hover:translate-y-0">
+                    <div 
+                      className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-all translate-y-[-10px] group-hover:translate-y-0 z-20"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                      onPointerDown={(e) => {
+                        e.stopPropagation();
+                      }}
+                    >
                       <DropdownMenu>
-                        <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                          <Button variant="secondary" size="icon" className="h-7 w-7 rounded-lg shadow-sm border border-border/50">
+                        <DropdownMenuTrigger asChild>
+                          <Button 
+                            variant="secondary" 
+                            size="icon" 
+                            className="h-7 w-7 rounded-lg shadow-sm border border-border/50"
+                          >
                             <Settings2 className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-48 bg-card/95 backdrop-blur-md border-border/50 shadow-2xl rounded-xl">
+                        <DropdownMenuContent 
+                          align="end" 
+                          className="w-48 bg-card/95 backdrop-blur-md border-border/50 shadow-2xl rounded-xl"
+                          onClick={(e) => e.stopPropagation()}
+                        >
                           <DropdownMenuLabel className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold px-3 py-2">Gerenciar</DropdownMenuLabel>
                           <DropdownMenuItem onClick={(e) => { e.stopPropagation(); duplicateTemplate(template); }} className="rounded-lg m-1">
                             <CopyPlus className="w-4 h-4 mr-2 text-primary" />
