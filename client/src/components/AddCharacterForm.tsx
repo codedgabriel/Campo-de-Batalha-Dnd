@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { User, Skull, Shield, X } from "lucide-react";
-import { Textarea } from "@/components/ui/textarea";
+import { AttackForm } from "./AttackForm";
 import { useInventory } from "@/hooks/use-inventory";
 
 interface AddCharacterFormProps {
@@ -245,16 +245,7 @@ export function AddCharacterForm({ onAdd, onSaveToInventory }: AddCharacterFormP
                   />
                 </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="attacks">Ataques / Ações (JSON ou Texto)</Label>
-              <Textarea
-                id="attacks"
-                placeholder='Ex: [{"name": "Espada", "toHit": "+5", "damage": "1d8+3"}]'
-                value={attacks}
-                onChange={(e) => setAttacks(e.target.value)}
-                className="bg-background/50 font-mono text-xs h-20"
-              />
-            </div>
+            <AttackForm value={attacks} onChange={setAttacks} />
 
                 <div className="space-y-2">
                   <Label htmlFor="count">Quantidade</Label>

@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { User, Skull, Shield, X } from "lucide-react";
-import { Textarea } from "@/components/ui/textarea";
+import { AttackForm } from "./AttackForm";
 import { useInventory, type InventoryTemplate } from "@/hooks/use-inventory";
 
 interface EditInventoryFormProps {
@@ -209,16 +209,7 @@ export function EditInventoryForm({ template, open, onOpenChange, onSave }: Edit
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="edit-attacks">Ataques / Ações (JSON ou Texto)</Label>
-              <Textarea
-                id="edit-attacks"
-                placeholder='Ex: [{"name": "Espada", "toHit": "+5", "damage": "1d8+3"}]'
-                value={attacks}
-                onChange={(e) => setAttacks(e.target.value)}
-                className="bg-background/50 font-mono text-xs h-20"
-              />
-            </div>
+            <AttackForm value={attacks} onChange={setAttacks} />
           </div>
 
           <Button type="submit" className="w-full font-bold">
