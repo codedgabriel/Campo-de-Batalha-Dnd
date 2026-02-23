@@ -100,7 +100,10 @@ export class DatabaseStorage implements IStorage {
           ac: 12,
           hp: 11,
           maxHp: 11,
-          attacks: "Cimitarra +3, Besta Leve +3",
+          attacks: JSON.stringify([
+            { name: "Cimitarra", type: "melee", toHit: "+3", damage: "1d6+1", damageType: "cortante" },
+            { name: "Besta Leve", type: "ranged", toHit: "+3", damage: "1d8", damageType: "perfurante" }
+          ]),
           image: "@assets/Bandido_1771782610726.jpeg",
           order: 1
         },
@@ -112,7 +115,10 @@ export class DatabaseStorage implements IStorage {
           ac: 13,
           hp: 13,
           maxHp: 13,
-          attacks: "Espada Curta +4, Arco Curto +4",
+          attacks: JSON.stringify([
+            { name: "Espada Curta", type: "melee", toHit: "+4", damage: "1d6+2", damageType: "perfurante" },
+            { name: "Arco Curto", type: "ranged", toHit: "+4", damage: "1d6+2", damageType: "perfurante" }
+          ]),
           image: "@assets/Esqueleto_1771782610731.jpeg",
           order: 2
         },
@@ -124,7 +130,9 @@ export class DatabaseStorage implements IStorage {
           ac: 16,
           hp: 11,
           maxHp: 11,
-          attacks: "Lança +3",
+          attacks: JSON.stringify([
+            { name: "Lança", type: "melee", toHit: "+3", damage: "1d6+1", damageType: "perfurante" }
+          ]),
           image: "@assets/Guarda_1771782610733.jpeg",
           order: 3
         },
@@ -136,7 +144,9 @@ export class DatabaseStorage implements IStorage {
           ac: 8,
           hp: 22,
           maxHp: 22,
-          attacks: "Pancada +3",
+          attacks: JSON.stringify([
+            { name: "Pancada", type: "melee", toHit: "+3", damage: "1d6+1", damageType: "concussão" }
+          ]),
           image: "@assets/Zumbi_1771782610733.jpeg",
           order: 4
         }

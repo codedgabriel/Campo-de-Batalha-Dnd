@@ -209,13 +209,13 @@ export function EditInventoryForm({ template, open, onOpenChange, onSave }: Edit
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="edit-attacks">Ataques / Ações (Separe por vírgula)</Label>
-              <Input
+              <Label htmlFor="edit-attacks">Ataques / Ações (JSON ou Texto)</Label>
+              <Textarea
                 id="edit-attacks"
-                placeholder="Ex: Espada Curta +5, Mordida +3"
+                placeholder='Ex: [{"name": "Espada", "toHit": "+5", "damage": "1d8+3"}]'
                 value={attacks}
                 onChange={(e) => setAttacks(e.target.value)}
-                className="bg-background/50"
+                className="bg-background/50 font-mono text-xs h-20"
               />
             </div>
           </div>

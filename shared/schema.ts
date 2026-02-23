@@ -2,6 +2,18 @@ import { pgTable, text, serial, integer, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+// Define the structure for an attack/action
+export const attackSchema = z.object({
+  name: z.string(),
+  type: z.enum(["melee", "ranged", "spell", "other"]),
+  toHit: z.string().optional(), // e.g., "+5"
+  damage: z.string().optional(), // e.g., "1d8+3"
+  damageType: z.string().optional(), // e.g., "slashing"
+  description: z.string().optional(),
+});
+
+export type Attack = z.infer<typeof attackSchema>;
+
 // We'll use this schema for type definitions even if we strictly use localStorage on the frontend
 export const characters = pgTable("characters", {
   id: text("id").primaryKey(), // Using UUID v4 for frontend generation
@@ -10,7 +22,7 @@ export const characters = pgTable("characters", {
   initiative: integer("initiative").default(0),
   initiativeModifier: integer("initiative_modifier").default(0),
   ac: integer("ac").default(10),
-  attacks: text("attacks"), // Store as a simple string for now
+  attacks: text("attacks"), // Store as a JSON string for now to avoid complex migrations, but structure it
   category: text("category"), // Added category field
   quantity: integer("quantity").default(1), // Added quantity field
   isTurn: boolean("is_turn").default(false),

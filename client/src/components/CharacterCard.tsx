@@ -1,5 +1,5 @@
 import { Character } from "@/hooks/use-characters";
-import { GripVertical, Sword, Skull, Shield, User, Trash2, Image as ImageIcon, FileText, Heart, PlusCircle, MinusCircle, Settings2, Copy } from "lucide-react";
+import { GripVertical, Sword, Skull, Shield, User, Trash2, Image as ImageIcon, FileText, Heart, PlusCircle, MinusCircle, Settings2, Copy, ChevronDown, ChevronUp, Dice5 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +18,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+
+interface Attack {
+  name: string;
+  type?: "melee" | "ranged" | "spell" | "other";
+  toHit?: string;
+  damage?: string;
+  damageType?: string;
+  description?: string;
+}
 
 interface CharacterCardProps {
   character: Character;
@@ -28,11 +38,52 @@ interface CharacterCardProps {
 }
 
 export function CharacterCard({ character, onRemove, onUpdate, onSelect, onAddCharacter }: CharacterCardProps) {
+  const { toast } = useToast();
   const [isConfigOpen, setIsConfigOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [hpShortcuts, setHpShortcuts] = useState([-1, -5, -10, 1, 5]);
   const [editingShortcuts, setEditingShortcuts] = useState(false);
   const [tempShortcuts, setTempShortcuts] = useState(hpShortcuts.join(", "));
   
+  const parsedAttacks: Attack[] = (() => {
+    try {
+      if (!character.attacks) return [];
+      const parsed = JSON.parse(character.attacks);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return character.attacks ? character.attacks.split(",").map(a => ({ name: a.trim() })) : [];
+    }
+  })();
+
+  const rollDice = (formula: string, label: string) => {
+    try {
+      const match = formula.toLowerCase().match(/(\d+)d(\d+)([+-]\d+)?/);
+      if (!match) {
+        toast({ title: "Fórmula inválida", description: "Use o formato 1d8+3", variant: "destructive" });
+        return;
+      }
+
+      const numDice = parseInt(match[1]);
+      const dieSize = parseInt(match[2]);
+      const modifier = match[3] ? parseInt(match[3]) : 0;
+
+      let total = 0;
+      const rolls = [];
+      for (let i = 0; i < numDice; i++) {
+        const roll = Math.floor(Math.random() * dieSize) + 1;
+        rolls.push(roll);
+        total += roll;
+      }
+      total += modifier;
+
+      toast({
+        title: label,
+        description: `Resultado: ${total} (Rolagem: [${rolls.join(", ")}] ${modifier >= 0 ? "+" : ""}${modifier})`,
+      });
+    } catch (e) {
+      toast({ title: "Erro na rolagem", variant: "destructive" });
+    }
+  };
   const handleDuplicate = () => {
     onAddCharacter(
       `${character.name} (Cópia)`,
@@ -179,12 +230,65 @@ export function CharacterCard({ character, onRemove, onUpdate, onSelect, onAddCh
           )}
         </div>
         
-        {character.attacks && (
-          <div className="mt-1 flex items-center gap-1 text-[9px] md:text-[10px] text-muted-foreground bg-muted/20 px-1.5 py-0.5 rounded border border-border/30 w-fit">
-            <Sword className="w-2.5 h-2.5" />
-            <span className="truncate max-w-[150px]">{character.attacks}</span>
-          </div>
-        )}
+        <div className="mt-2 border rounded-md overflow-hidden bg-background/50">
+          <Button 
+            variant="ghost" 
+            className="w-full flex justify-between items-center h-7 px-2 text-[10px] font-semibold hover:bg-muted/50"
+            onClick={(e) => { e.stopPropagation(); setIsExpanded(!isExpanded); }}
+          >
+            <span className="flex items-center gap-1.5"><Sword className="w-3 h-3" /> Ataques</span>
+            {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+          </Button>
+          
+          <AnimatePresence>
+            {isExpanded && (
+              <motion.div 
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="p-1 space-y-1 border-t bg-muted/10 overflow-hidden"
+              >
+                {parsedAttacks.length > 0 ? (
+                  parsedAttacks.map((attack, idx) => (
+                    <div key={idx} className="flex flex-col p-1.5 rounded bg-card/50 border border-border/50">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-bold text-[10px] md:text-xs truncate">{attack.name}</span>
+                        <div className="flex gap-1 shrink-0">
+                          {attack.toHit && (
+                            <Button 
+                              size="sm" 
+                              variant="secondary" 
+                              className="h-5 px-1.5 text-[9px] font-mono"
+                              onClick={(e) => { 
+                                e.stopPropagation(); 
+                                const bonus = attack.toHit?.startsWith("+") || attack.toHit?.startsWith("-") ? attack.toHit : "+" + attack.toHit;
+                                rollDice(`1d20${bonus}`, `Ataque: ${attack.name}`); 
+                              }}
+                            >
+                              {attack.toHit}
+                            </Button>
+                          )}
+                          {attack.damage && (
+                            <Button 
+                              size="sm" 
+                              variant="outline" 
+                              className="h-5 px-1.5 text-[9px] font-mono border-primary/30 text-primary hover:bg-primary/5"
+                              onClick={(e) => { e.stopPropagation(); rollDice(attack.damage!, `Dano: ${attack.name}`); }}
+                            >
+                              <Dice5 className="w-2.5 h-2.5 mr-1" /> {attack.damage}
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-center py-2 text-[9px] text-muted-foreground italic">Nenhum ataque</p>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
         
         {character.hp !== undefined && (
           <div className="mt-2 flex items-center gap-1 overflow-x-auto no-scrollbar">
