@@ -163,7 +163,7 @@ export function InventoryManager({ onSelect, onAddCharacter }: InventoryManagerP
                       <div className="flex-1 min-w-0">
                         <span className="font-display font-bold text-sm block truncate group-hover:text-primary transition-colors">{template.name}</span>
                         <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">
-                          {template.type === "enemy" ? "Monstro" : template.type === "ally" ? "Aliado" : "Jogador"}
+                          {template.type === "enemy" ? "Inimigo" : template.type === "ally" ? "Aliado" : "Jogador"}
                         </span>
                       </div>
                     </div>

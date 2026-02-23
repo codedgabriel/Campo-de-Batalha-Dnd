@@ -356,12 +356,16 @@ export function CharacterCard({ character, onRemove, onUpdate, onSelect, onAddCh
         />
         
         <DropdownMenu>
-          <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+          <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
               className="text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors md:opacity-0 group-hover:opacity-100 focus:opacity-100 w-8 h-8 md:w-10 md:h-10"
               title="Configurações"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
             >
               <Settings2 className="w-4 h-4 md:w-5 md:h-5" />
             </Button>
