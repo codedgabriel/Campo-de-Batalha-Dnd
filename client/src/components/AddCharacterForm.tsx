@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { User, Skull, Shield, X } from "lucide-react";
+import { User, Skull, Shield, X, Image as ImageIcon, Heart, Sword, Dice5 } from "lucide-react";
 import { AttackForm } from "./AttackForm";
 import { useInventory } from "@/hooks/use-inventory";
 
@@ -112,93 +112,100 @@ export function AddCharacterForm({ onAdd, onSaveToInventory }: AddCharacterFormP
         <DialogHeader>
           <DialogTitle className="text-2xl font-display text-primary">Criação de Personagem</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-6 mt-4">
-          <div className="space-y-2">
-            <Label>Tipo</Label>
-            <RadioGroup 
-              value={type} 
-              onValueChange={(val) => setType(val as CharacterType)}
-              className="grid grid-cols-3 gap-2"
-            >
-              <div>
-                <RadioGroupItem value="player" id="player" className="peer sr-only" />
-                <Label
-                  htmlFor="player"
-                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-2 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-blue-500 peer-data-[state=checked]:bg-blue-500/10 cursor-pointer transition-all"
-                >
-                  <User className="mb-1 h-5 w-5 text-blue-500" />
-                  <span className="text-xs font-semibold">Jogador</span>
-                </Label>
+        <form onSubmit={handleSubmit} className="space-y-4 mt-2">
+          <div className="bg-muted/30 p-4 rounded-xl border border-border/50 space-y-4">
+            <div className="space-y-2">
+              <Label className="text-xs uppercase tracking-widest font-bold text-muted-foreground">Alinhamento / Tipo</Label>
+              <RadioGroup 
+                value={type} 
+                onValueChange={(val) => setType(val as CharacterType)}
+                className="grid grid-cols-3 gap-3"
+              >
+                <div>
+                  <RadioGroupItem value="player" id="player" className="peer sr-only" />
+                  <Label
+                    htmlFor="player"
+                    className="flex flex-col items-center justify-center rounded-xl border-2 border-muted bg-popover/50 p-3 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-blue-500 peer-data-[state=checked]:bg-blue-500/10 cursor-pointer transition-all h-20"
+                  >
+                    <User className="mb-1 h-6 w-6 text-blue-500" />
+                    <span className="text-[10px] font-bold uppercase tracking-tight">Jogador</span>
+                  </Label>
+                </div>
+                <div>
+                  <RadioGroupItem value="ally" id="ally" className="peer sr-only" />
+                  <Label
+                    htmlFor="ally"
+                    className="flex flex-col items-center justify-center rounded-xl border-2 border-muted bg-popover/50 p-3 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-green-500 peer-data-[state=checked]:bg-green-500/10 cursor-pointer transition-all h-20"
+                  >
+                    <Shield className="mb-1 h-6 w-6 text-green-500" />
+                    <span className="text-[10px] font-bold uppercase tracking-tight">Aliado</span>
+                  </Label>
+                </div>
+                <div>
+                  <RadioGroupItem value="enemy" id="enemy" className="peer sr-only" />
+                  <Label
+                    htmlFor="enemy"
+                    className="flex flex-col items-center justify-center rounded-xl border-2 border-muted bg-popover/50 p-3 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-destructive peer-data-[state=checked]:bg-destructive/10 cursor-pointer transition-all h-20"
+                  >
+                    <Skull className="mb-1 h-6 w-6 text-destructive" />
+                    <span className="text-[10px] font-bold uppercase tracking-tight">Inimigo</span>
+                  </Label>
+                </div>
+              </RadioGroup>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-xs uppercase tracking-widest font-bold text-muted-foreground">Nome do Combatente</Label>
+                <Input
+                  id="name"
+                  placeholder="Ex: Rei Goblin"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="bg-background/80 border-border/50 h-10"
+                  autoFocus
+                  autoComplete="off"
+                />
               </div>
-              <div>
-                <RadioGroupItem value="ally" id="ally" className="peer sr-only" />
-                <Label
-                  htmlFor="ally"
-                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-2 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-green-500 peer-data-[state=checked]:bg-green-500/10 cursor-pointer transition-all"
-                >
-                  <Shield className="mb-1 h-5 w-5 text-green-500" />
-                  <span className="text-xs font-semibold">Aliado</span>
-                </Label>
+
+              <div className="space-y-2">
+                <Label htmlFor="image" className="text-xs uppercase tracking-widest font-bold text-muted-foreground">Ficha / Avatar</Label>
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <Input
+                      id="image"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="bg-background/80 border-border/50 h-10 cursor-pointer pr-10"
+                    />
+                    <ImageIcon className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+                  </div>
+                  {image && (
+                    <div className="relative w-10 h-10 border rounded-lg overflow-hidden flex-shrink-0 shadow-sm">
+                      <img src={image} alt="Preview" className="w-full h-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => setImage(undefined)}
+                        className="absolute top-0 right-0 bg-destructive text-white p-0.5 rounded-bl hover:bg-destructive/80"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
-              <div>
-                <RadioGroupItem value="enemy" id="enemy" className="peer sr-only" />
-                <Label
-                  htmlFor="enemy"
-                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-2 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-destructive peer-data-[state=checked]:bg-destructive/10 cursor-pointer transition-all"
-                >
-                  <Skull className="mb-1 h-5 w-5 text-destructive" />
-                  <span className="text-xs font-semibold">Inimigo</span>
-                </Label>
-              </div>
-            </RadioGroup>
+            </div>
           </div>
 
-          <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-4 bg-muted/20 p-4 rounded-xl border border-border/50">
             <div className="space-y-2">
-              <Label htmlFor="name">Nome</Label>
-              <Input
-                id="name"
-                placeholder="Ex: Rei Goblin"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="bg-background/50"
-                autoFocus
-                autoComplete="off"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="image">Ficha (Imagem)</Label>
-              <div className="flex gap-2">
-                <Input
-                  id="image"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="bg-background/50 cursor-pointer flex-1"
-                />
-                {image && (
-                  <div className="relative w-10 h-10 border rounded overflow-hidden flex-shrink-0">
-                    <img src={image} alt="Preview" className="w-full h-full object-cover" />
-                    <button
-                      type="button"
-                      onClick={() => setImage(undefined)}
-                      className="absolute top-0 right-0 bg-destructive text-destructive-foreground p-0.5 rounded-bl"
-                    >
-                      <X className="w-2 h-2" />
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="category">Categoria</Label>
+              <Label htmlFor="category" className="text-xs uppercase tracking-widest font-bold text-muted-foreground">Categoria (Opcional)</Label>
               <select
                 id="category"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full p-2 bg-background border border-input rounded-md"
+                className="w-full h-10 px-3 py-2 bg-background/80 border border-border/50 rounded-md text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-all"
               >
                 <option value="">Nenhuma</option>
                 {categories.map(cat => (
@@ -208,62 +215,71 @@ export function AddCharacterForm({ onAdd, onSaveToInventory }: AddCharacterFormP
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="init">Iniciativa Fixa (Manual)</Label>
+              <Label htmlFor="init" className="text-xs uppercase tracking-widest font-bold text-muted-foreground">Iniciativa Fixa</Label>
               <Input
                 id="init"
                 type="number"
                 value={initiative}
                 onChange={(e) => setInitiative(e.target.value)}
-                className="bg-background/50"
+                className="bg-background/80 border-border/50 h-10 text-center font-bold"
                 autoComplete="off"
               />
             </div>
+          </div>
 
-            {type !== "player" && (
-              <>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="ac">CA</Label>
+          {type !== "player" && (
+            <div className="bg-primary/5 p-4 rounded-xl border border-primary/20 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+              <div className="grid grid-cols-3 gap-4">
+                <div className="space-y-2 text-center">
+                  <Label htmlFor="hp" className="text-xs uppercase tracking-widest font-bold text-red-500/80">Vida (HP)</Label>
+                  <div className="relative">
+                    <Input
+                      id="hp"
+                      type="number"
+                      value={hp}
+                      onChange={(e) => setHp(e.target.value)}
+                      className="bg-background/80 border-border/50 h-10 text-center font-bold text-red-500"
+                    />
+                    <Heart className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-red-500/30" />
+                  </div>
+                </div>
+                <div className="space-y-2 text-center">
+                  <Label htmlFor="ac" className="text-xs uppercase tracking-widest font-bold text-blue-500/80">Defesa (CA)</Label>
+                  <div className="relative">
                     <Input
                       id="ac"
                       type="number"
                       value={ac}
                       onChange={(e) => setAc(e.target.value)}
-                      className="bg-background/50"
+                      className="bg-background/80 border-border/50 h-10 text-center font-bold text-blue-500"
                     />
+                    <Shield className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-blue-500/30" />
                   </div>
                 </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="hp">HP</Label>
-                  <Input
-                    id="hp"
-                    type="number"
-                    value={hp}
-                    onChange={(e) => setHp(e.target.value)}
-                    className="bg-background/50"
-                  />
-                </div>
-
-            <AttackForm value={attacks} onChange={setAttacks} />
-
-                <div className="space-y-2">
-                  <Label htmlFor="count">Quantidade</Label>
+                <div className="space-y-2 text-center">
+                  <Label htmlFor="count" className="text-xs uppercase tracking-widest font-bold text-muted-foreground">Qtd.</Label>
                   <Input
                     id="count"
                     type="number"
                     min="1"
                     value={count}
                     onChange={(e) => setCount(e.target.value)}
-                    className="bg-background/50"
+                    className="bg-background/80 border-border/50 h-10 text-center font-bold"
                   />
                 </div>
-              </>
-            )}
-          </div>
+              </div>
 
-          <Button type="submit" className="w-full font-bold">
-            Adicionar
+              <div className="pt-2">
+                <Label className="text-xs uppercase tracking-widest font-bold text-muted-foreground mb-2 block">Ações e Ataques</Label>
+                <div className="bg-background/50 rounded-lg border border-border/50 p-2">
+                  <AttackForm value={attacks} onChange={setAttacks} />
+                </div>
+              </div>
+            </div>
+          )}
+
+          <Button type="submit" className="w-full h-12 text-lg font-display font-bold shadow-[0_4px_14px_0_rgba(var(--primary),0.39)] transition-all hover:scale-[1.02] active:scale-[0.98]">
+            Adicionar ao Combate
           </Button>
         </form>
       </DialogContent>
