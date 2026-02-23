@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { User, Skull, Shield, X } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 import { useInventory, type InventoryTemplate } from "@/hooks/use-inventory";
 
 interface EditInventoryFormProps {
